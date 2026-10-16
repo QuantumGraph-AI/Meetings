@@ -1,0 +1,79 @@
+Pessoal, gostaria de confirmar com vocês os encaminhamentos e as pendências da última reunião sobre o **Trading Ahead**, principalmente em relação à definição dos cortes de resultado financeiro para PF e PJ.
+
+Na análise apresentada, mantivemos os demais critérios do monitoramento e variamos apenas os cortes financeiros, utilizando aproximadamente 16 meses de histórico, desde julho/2025 até parte de setembro/2026.
+
+**1. Resultados das simulações**
+
+Para PF, avaliamos cortes fixos de **R$ 50 mil, R$ 75 mil e R$ 100 mil**, além dos percentis mensais P95, P99 e P99,9. Para PJ, simulamos cortes fixos de **R$ 350 mil, R$ 500 mil, R$ 700 mil e R$ 1 milhão**.
+
+Observamos uma variação significativa dos percentis mensais. O P99 de PF apresentou valores entre aproximadamente **R$ 16 mil e R$ 200 mil**, enquanto para PJ a amplitude chegou a aproximadamente **R$ 46 mil até R$ 41 milhões**, dependendo do mês.
+
+Essa instabilidade motivou a discussão sobre utilizar uma janela histórica maior.
+
+**2. Proposta de corte para o Trading Ahead**
+
+Pelo que entendi, a proposta encaminhada foi utilizar um **percentil mais restritivo, como o P99, condicionado a um piso mínimo de R$ 100 mil de resultado financeiro**.
+
+Nos exemplos discutidos, isso representaria um corte próximo de R$ 100 mil para PF e de R$ 1 milhão para PJ, dependendo das respectivas distribuições.
+
+Gostaria de confirmar se essa foi realmente a regra escolhida por Negócios ou se esses valores ainda precisam de validação.
+
+**3. Pendências sobre a regra dinâmica**
+
+Também discutimos a possibilidade de substituir o cálculo dos percentis mensais por uma janela histórica móvel de **182 dias**, aproveitando o período já utilizado para avaliação do comportamento dos clientes.
+
+Nesse ponto, entendi que ainda precisaríamos definir:
+
+- Se utilizaremos efetivamente os 182 dias como janela de referência.
+- Se os percentis serão recalculados automaticamente ou se adotaremos cortes estáticos com revisões periódicas.
+- Qual será a frequência de atualização, caso optemos pela regra dinâmica.
+- Se haverá apenas um piso mínimo financeiro ou também um limite máximo para os cortes.
+
+**4. Volumetria e impacto nos alertas**
+
+Na análise inicial, tínhamos uma referência de aproximadamente **215 alertas anuais**, que foi alterada com a ampliação do período estudado.
+
+Durante a discussão também surgiram dúvidas sobre a volumetria dos cenários simulados, incluindo referências a 2.666 alertas e a um universo de aproximadamente 13 mil. Entendo que precisamos confirmar se essas quantidades consideram os mesmos critérios e populações antes de utilizá-las na decisão.
+
+**5. Formalização**
+
+Por fim, ficou encaminhado o registro da regra escolhida, com a justificativa dos parâmetros e a definição de como os cortes serão acompanhados e revisados.
+
+**Podem confirmar se esses são os encaminhamentos corretos?**
+
+Principalmente, gostaria de entender **quais parâmetros já estão definidos por Negócios e quais ainda dependem de análise ou decisão**, para direcionarmos corretamente os próximos passos do Trading Ahead.
+
+
+
+
+
+
+
+
+
+
+
+  ///
+
+
+
+
+  ----
+
+
+
+
+
+  No Trade Ahead, a reunião fechou numa regra híbrida. O corte passa a ser o P99 da distribuição de resultado nos dias de oscilação relevante, condicionado a um piso de materialidade de R$ 100 mil. Assim, o corte pode subir com a distribuição, mas nunca fica abaixo do piso. A régua ficou acima da do Insider de propósito, porque aqui o fato relevante é simulado pela oscilação e a ideia é pegar só posição gritante. Pelas contas de quem propôs, isso dá algo perto de R$ 1 milhão para PJ e os próprios 100 mil para PF. O combinado foi registrar no fórum de sexta com uma justificativa que aguente a defesa no MRM, e quase tudo que ficou pendente serve para sustentar esse registro.
+
+A pendência mais concreta ficou com você. É refazer os percentis com a janela de 182 dias no lugar do recorte mensal, que é a mesma do período histórico que o modelo já usa para traçar o padrão do cliente. Foi o recorte mensal que inflou a variância. O P99 de PF foi de 16 mil a uns 200 mil, e o de PJ de 46 mil a 41 milhões. Os números que apareceram na tela durante a reunião já eram de seis meses. Nessa rodada faz sentido simular exatamente a regra aprovada, o maior valor entre o P99 móvel e os 100 mil. Seria mês a mês, separando PF e PJ, e comparando com os 50 mil vigentes. De quebra dá para fechar setembro, que entrou só com os primeiros dias.
+
+Essa simulação deve deixar evidente uma coisa que convém levar pronta. Com seis meses de janela o P99 de PF fica na casa dos 17 mil. Então no PF o piso manda praticamente sempre e a regra vira um corte fixo de 100 mil. Já no PJ, com o P99 na casa do milhão, o piso dificilmente encosta e quem trabalha é o percentil. Isso favorece a narrativa, porque é uma regra só para os dois públicos e são as próprias distribuições que geram cortes efetivos diferentes, sem ninguém precisar arbitrar percentil por público. Em contrapartida, para PF a mudança significa dobrar a régua de 50 para 100 mil, e a queda de alertas que vem junto precisa estar quantificada. Sua série de corte fixo em 100 mil já adianta boa parte disso.
+
+A segunda ponta solta é a dúvida do Marcel sobre volume. Ele rodou com todos os critérios e sem corte, chegou a uns 13 mil alertas e saiu achando que o seu gráfico não aplicava todos os critérios antes de variar o corte. A conversa foi para a relação entre oscilação e ganho e ficou confirmado que a distribuição é só dos dias estressados. Mas a conciliação mesmo não aconteceu. Antes do fórum é bom bater o seu cenário de corte zero com esses 13 mil. Também vale deixar escrito em que etapa do funil o percentil é calculado e sobre qual população, se os 67 mil de PF que apareceram na tela ou só quem já passou pelos outros filtros. Essa escolha mexe bastante no valor do corte e é o tipo de pergunta que vai aparecer no MRM.
+
+Dois parâmetros do desenho também ficaram sem cravar. A janela foi sugerida como 182 dias, mas quando o assunto virou automação ela ainda apareceu como um tempo X a definir, então precisa constar de forma explícita no registro. E surgiu a ideia de um teto além do piso, que ninguém decidiu. Esse teto conversa direto com o incômodo de quem achou mais de 1 milhão alto demais para PJ e chegou a falar em P97. É o ponto com mais chance de voltar à mesa, e se for entrar convém simular em quais meses ele morderia.
+
+No lado operacional, para a regra ser móvel de verdade o percentil precisa ser recalculado dentro do pipeline antes de cada processamento, e ficou pedida uma avaliação de esforço disso. Quem respondeu pela parte técnica achou que não é complexo, mas ficou de se aprofundar e trazer um panorama. Até lá, quem propôs a regra se dispôs a assumir do lado dele o acompanhamento do número de alertas e o ajuste do corte, dentro da governança de revisão de parâmetros. Isso permite registrar agora com o valor calculado e tratar a automação como evolução.
+
+Pondo em ordem, primeiro vem a simulação semestral junto com a conciliação de volume. Depois é cravar janela, piso e eventual teto, e aí o registro na sexta, com a avaliação de esforço correndo em paralelo. Só confira alguns trechos que a transcrição embaralhou. O nome do Trade Ahead sai deformado em alguns pontos ("3GREG", "trailer red"), e foi pelo contexto que atribuí a ele o P99 com piso de 100 mil. No fechamento aparece um "55 e 100" que, pelo que vinha sendo dito, deve ser 50 mil no Insider e 100 mil no Trade Ahead. Pouco antes disso há uma menção a outubro que pode ser prazo.
