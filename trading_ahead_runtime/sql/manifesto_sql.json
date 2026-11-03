@@ -1,0 +1,696 @@
+{
+  "schema_version": 1,
+  "source_notebook": "CTAs/CTA_23_09_26.ipynb",
+  "source_notebook_sha256": "85c5124c8db46af4ef8db73ac514b7ecef08f933a4e4f702c81f38960134b8c5",
+  "extraction": "AST de atribuições ativas a literais string; nenhuma célula executada",
+  "cell_index_base": 0,
+  "template_count": 20,
+  "format": "PARQUET",
+  "partition_column": "SAFRA",
+  "original_database": "workspace_db",
+  "original_workgroup": "consumer-workgroup-market-surveillance",
+  "date_parameters": {
+    "SAFRA": {
+      "format": "YYYYMM",
+      "meaning": "Competência mensal, string com seis dígitos"
+    },
+    "SAFRA_ANO": {
+      "format": "YYYY",
+      "meaning": "Ano da mesma competência; usado também nas datas de feriados do SQL original"
+    },
+    "SAFRA_MES": {
+      "format": "MM",
+      "meaning": "Mês da competência, com zero à esquerda"
+    },
+    "SAFRA_INICIO": {
+      "format": "YYYY-MM-DD",
+      "meaning": "Primeiro dia da competência"
+    },
+    "SAFRA_FIM": {
+      "format": "YYYY-MM-DD",
+      "meaning": "Último dia real da competência, respeitando ano bissexto"
+    }
+  },
+  "financial_lookback_contract": {
+    "required_runtime_parameter": false,
+    "allowed_calendar_days": [
+      182
+    ],
+    "default": 182,
+    "approved_operational_calendar_days": 182,
+    "offline_plan_calendar_days": [
+      91,
+      182
+    ],
+    "historical_control_only_calendar_days": [
+      91
+    ],
+    "changes_price_lookback": false,
+    "price_lookback_calendar_days": 182,
+    "note": "Nenhum destes templates introduz corte financeiro P99; calibração e filtro final serão etapas adicionais."
+  },
+  "runtime_generated_dependencies": {
+    "CTA13_CalculoResultado_PF_{{SAFRA}}": "cta13_pf",
+    "CTA13_CalculoResultado_PJ_{{SAFRA}}": "cta13_pj"
+  },
+  "runtime_rewrite_required": {
+    "logical_table_identifiers": true,
+    "external_location": true,
+    "instruction": "Os destinos literais pertencem à fonte histórica. O executor deve substituí-los por nomes e prefixos exclusivos e validar que nenhum destino original permaneceu antes de qualquer execução."
+  },
+  "forbidden_to_execute_from_notebook": [
+    "DropTable",
+    "RunQuery",
+    "ReadQuery",
+    "células de redefinição de competência 3/39/58"
+  ],
+  "templates": [
+    {
+      "stage_id": "cta01",
+      "cell": 6,
+      "cell_index_base": 0,
+      "variable": "sql",
+      "file": "sql/cta01.sql",
+      "logical_database": "workspace_db",
+      "logical_table": "CTA1_Precos_{{SAFRA}}",
+      "qualified_logical_table": "workspace_db.CTA1_Precos_{{SAFRA}}",
+      "logical_references": [],
+      "dependencies": [],
+      "external_sources": [
+        "db_corp_gestaoderiscos_distribuiprecoscorporativos_sor_01.tbim8_acao_btres"
+      ],
+      "parameters": [
+        "SAFRA",
+        "SAFRA_ANO",
+        "SAFRA_FIM",
+        "SAFRA_INICIO"
+      ],
+      "source_notebook_sha256": "85c5124c8db46af4ef8db73ac514b7ecef08f933a4e4f702c81f38960134b8c5",
+      "source_cell_sha256": "a6a7cd0cc4a0333419b84a0076035d7d3900d61aa435c72220a64fc373eeeae1",
+      "source_sql_sha256": "900e07faa63c05e44c77105552b03f9fa9e9ea133eec9fde3bb0f111ec26e52e",
+      "sha256": "900e07faa63c05e44c77105552b03f9fa9e9ea133eec9fde3bb0f111ec26e52e",
+      "source_sql_preserved_verbatim": true,
+      "optional": false,
+      "feeds_active_financial_flow": true,
+      "changes": []
+    },
+    {
+      "stage_id": "cta02",
+      "cell": 8,
+      "cell_index_base": 0,
+      "variable": "sql",
+      "file": "sql/cta02.sql",
+      "logical_database": "workspace_db",
+      "logical_table": "CTA2_VariacaoPreco_{{SAFRA}}",
+      "qualified_logical_table": "workspace_db.CTA2_VariacaoPreco_{{SAFRA}}",
+      "logical_references": [
+        "CTA1_Precos_{{SAFRA}}"
+      ],
+      "dependencies": [
+        "cta01"
+      ],
+      "external_sources": [],
+      "parameters": [
+        "SAFRA",
+        "SAFRA_FIM",
+        "SAFRA_INICIO"
+      ],
+      "source_notebook_sha256": "85c5124c8db46af4ef8db73ac514b7ecef08f933a4e4f702c81f38960134b8c5",
+      "source_cell_sha256": "519c458d226ba22c99f6f323d91343866600f5f2077d30283f471c372f214505",
+      "source_sql_sha256": "f479f5d598c6e64537dfc50e459f1adc2c311ea453a6aaae02f163fda7d8ff9c",
+      "sha256": "f479f5d598c6e64537dfc50e459f1adc2c311ea453a6aaae02f163fda7d8ff9c",
+      "source_sql_preserved_verbatim": true,
+      "optional": false,
+      "feeds_active_financial_flow": true,
+      "changes": []
+    },
+    {
+      "stage_id": "cta03",
+      "cell": 12,
+      "cell_index_base": 0,
+      "variable": "sql",
+      "file": "sql/cta03.sql",
+      "logical_database": "workspace_db",
+      "logical_table": "CTA3_EventosAtipicos_{{SAFRA}}",
+      "qualified_logical_table": "workspace_db.CTA3_EventosAtipicos_{{SAFRA}}",
+      "logical_references": [
+        "CTA2_VariacaoPreco_{{SAFRA}}"
+      ],
+      "dependencies": [
+        "cta02"
+      ],
+      "external_sources": [
+        "db_corp_gestaoderiscos_alertastradesurveillance_sor_01.tb_rss_base_ticker_sor",
+        "db_corp_modelagem_historicalmarketdata_sor_01.tb_wa5_sor_br_gov_cvm_ipe_cia_aberta"
+      ],
+      "parameters": [
+        "SAFRA",
+        "SAFRA_FIM",
+        "SAFRA_INICIO"
+      ],
+      "source_notebook_sha256": "85c5124c8db46af4ef8db73ac514b7ecef08f933a4e4f702c81f38960134b8c5",
+      "source_cell_sha256": "516a8576abbe4348fec869a15b4e584f72cb40d3319f969f16635504fa8c9be7",
+      "source_sql_sha256": "4e082da8e82f6c63d4361a81c8c2b99cd83159050ed6ef59f09b4c31e429910b",
+      "sha256": "4e082da8e82f6c63d4361a81c8c2b99cd83159050ed6ef59f09b4c31e429910b",
+      "source_sql_preserved_verbatim": true,
+      "optional": false,
+      "feeds_active_financial_flow": true,
+      "changes": []
+    },
+    {
+      "stage_id": "cta04",
+      "cell": 16,
+      "cell_index_base": 0,
+      "variable": "sql",
+      "file": "sql/cta04.sql",
+      "logical_database": "workspace_db",
+      "logical_table": "CTA4_PrecosEventos_{{SAFRA}}",
+      "qualified_logical_table": "workspace_db.CTA4_PrecosEventos_{{SAFRA}}",
+      "logical_references": [
+        "CTA1_Precos_{{SAFRA}}",
+        "CTA3_EventosAtipicos_{{SAFRA}}"
+      ],
+      "dependencies": [
+        "cta01",
+        "cta03"
+      ],
+      "external_sources": [],
+      "parameters": [
+        "SAFRA"
+      ],
+      "source_notebook_sha256": "85c5124c8db46af4ef8db73ac514b7ecef08f933a4e4f702c81f38960134b8c5",
+      "source_cell_sha256": "883c9934d1d36aa6d6ebeb325b17ed21e3fc7d524c70004e1658abd3eb1c9802",
+      "source_sql_sha256": "3ea036e8bd62a1bce130f7caac26fd55f8d5d3175c597ef731b4cfcb2d6c7fb4",
+      "sha256": "3ea036e8bd62a1bce130f7caac26fd55f8d5d3175c597ef731b4cfcb2d6c7fb4",
+      "source_sql_preserved_verbatim": true,
+      "optional": false,
+      "feeds_active_financial_flow": true,
+      "changes": []
+    },
+    {
+      "stage_id": "cta05",
+      "cell": 18,
+      "cell_index_base": 0,
+      "variable": "sql",
+      "file": "sql/cta05.sql",
+      "logical_database": "workspace_db",
+      "logical_table": "CTA5_EstudoVariacao_{{SAFRA}}",
+      "qualified_logical_table": "workspace_db.CTA5_EstudoVariacao_{{SAFRA}}",
+      "logical_references": [
+        "CTA4_PrecosEventos_{{SAFRA}}"
+      ],
+      "dependencies": [
+        "cta04"
+      ],
+      "external_sources": [],
+      "parameters": [
+        "SAFRA",
+        "SAFRA_FIM",
+        "SAFRA_INICIO"
+      ],
+      "source_notebook_sha256": "85c5124c8db46af4ef8db73ac514b7ecef08f933a4e4f702c81f38960134b8c5",
+      "source_cell_sha256": "ce251ee167f8b42c357314cd7d3860855ff8c0230a35c6a66891518521541938",
+      "source_sql_sha256": "1afca41808ea7eb6992bc8303981249b5a9aa5ab231bcd27a6786482f3ea752c",
+      "sha256": "1afca41808ea7eb6992bc8303981249b5a9aa5ab231bcd27a6786482f3ea752c",
+      "source_sql_preserved_verbatim": true,
+      "optional": false,
+      "feeds_active_financial_flow": true,
+      "changes": []
+    },
+    {
+      "stage_id": "cta06",
+      "cell": 21,
+      "cell_index_base": 0,
+      "variable": "sql",
+      "file": "sql/cta06.sql",
+      "logical_database": "workspace_db",
+      "logical_table": "CTA6_Operacoes_{{SAFRA}}",
+      "qualified_logical_table": "workspace_db.CTA6_Operacoes_{{SAFRA}}",
+      "logical_references": [
+        "CTA5_EstudoVariacao_{{SAFRA}}"
+      ],
+      "dependencies": [
+        "cta05"
+      ],
+      "external_sources": [
+        "db_corp_corretora_inoabrokertools_sor_01.tb_ep7_re_complementos_investidores_sor",
+        "db_corp_corretora_inoabrokertools_sot_01.tb_ep7_alocacoes_sot",
+        "db_corp_corretora_inoabrokertools_sot_01.tb_ep7_complementos_contas_sot",
+        "db_corp_corretora_sinacor_sor_01.tb_eg9_tsccliger",
+        "db_corp_gestaoderiscos_alertastradesurveillance_sor_01.tb_rss_base_ticker_sor",
+        "db_corp_modelagem_historicalmarketdata_sor_01.tb_wa5_sor_br_gov_cvm_fre_cia_aberta_administrador_membro_conselho_fiscal",
+        "db_corp_modelagem_historicalmarketdata_sor_01.tb_wa5_sor_br_gov_cvm_fre_cia_aberta_membro_comite",
+        "db_corp_modelagem_historicalmarketdata_sor_01.tb_wa5_sor_br_gov_cvm_fre_cia_aberta_participacao_sociedade",
+        "db_corp_modelagem_historicalmarketdata_sor_01.tb_wa5_sor_br_gov_cvm_fre_cia_aberta_posicao_acionaria",
+        "db_corp_modelagem_historicalmarketdata_sor_01.tb_wa5_sor_br_gov_cvm_fre_cia_aberta_relacao_familiar",
+        "db_corp_modelagem_historicalmarketdata_sor_01.tb_wa5_sor_br_gov_cvm_fre_cia_aberta_relacao_subordinacao"
+      ],
+      "parameters": [
+        "SAFRA",
+        "SAFRA_ANO",
+        "SAFRA_FIM",
+        "SAFRA_INICIO",
+        "SAFRA_MES"
+      ],
+      "source_notebook_sha256": "85c5124c8db46af4ef8db73ac514b7ecef08f933a4e4f702c81f38960134b8c5",
+      "source_cell_sha256": "bb7232797ef275295f0f0f8adb72ca4876b77b4f3f9216d363af60ef0b90592d",
+      "source_sql_sha256": "81f92e021e6ca537afe807893f5a76d3ff63d3623a71ae09557c8d79bbc3676e",
+      "sha256": "81f92e021e6ca537afe807893f5a76d3ff63d3623a71ae09557c8d79bbc3676e",
+      "source_sql_preserved_verbatim": true,
+      "optional": false,
+      "feeds_active_financial_flow": true,
+      "changes": []
+    },
+    {
+      "stage_id": "cta07",
+      "cell": 23,
+      "cell_index_base": 0,
+      "variable": "sql",
+      "file": "sql/cta07.sql",
+      "logical_database": "workspace_db",
+      "logical_table": "CTA7_OperacoesEventos_{{SAFRA}}",
+      "qualified_logical_table": "workspace_db.CTA7_OperacoesEventos_{{SAFRA}}",
+      "logical_references": [
+        "CTA3_EventosAtipicos_{{SAFRA}}",
+        "CTA6_Operacoes_{{SAFRA}}"
+      ],
+      "dependencies": [
+        "cta03",
+        "cta06"
+      ],
+      "external_sources": [],
+      "parameters": [
+        "SAFRA"
+      ],
+      "source_notebook_sha256": "85c5124c8db46af4ef8db73ac514b7ecef08f933a4e4f702c81f38960134b8c5",
+      "source_cell_sha256": "36fe85c7189530cb069ea519f000c9331fb0f9b61d52a272e9a66fcb0b08312d",
+      "source_sql_sha256": "8e59a8b73e8bff17ecf1bb911c3288bb33a198e473c55579da73b4e5f65858d5",
+      "sha256": "8e59a8b73e8bff17ecf1bb911c3288bb33a198e473c55579da73b4e5f65858d5",
+      "source_sql_preserved_verbatim": true,
+      "optional": false,
+      "feeds_active_financial_flow": true,
+      "changes": []
+    },
+    {
+      "stage_id": "cta08",
+      "cell": 25,
+      "cell_index_base": 0,
+      "variable": "sql",
+      "file": "sql/cta08.sql",
+      "logical_database": "workspace_db",
+      "logical_table": "CTA8_DayTrader_{{SAFRA}}",
+      "qualified_logical_table": "workspace_db.CTA8_DayTrader_{{SAFRA}}",
+      "logical_references": [
+        "CTA7_OperacoesEventos_{{SAFRA}}"
+      ],
+      "dependencies": [
+        "cta07"
+      ],
+      "external_sources": [],
+      "parameters": [
+        "SAFRA"
+      ],
+      "source_notebook_sha256": "85c5124c8db46af4ef8db73ac514b7ecef08f933a4e4f702c81f38960134b8c5",
+      "source_cell_sha256": "e9154bf9b2ca6b51b487ff034e85e4a4ad776b3d8b2d702a4433ee37ab72cdf4",
+      "source_sql_sha256": "9d0aabd539cdb2a88cbc05e5f52e857f2dc834aabaaa3dc44f822b64fd1f7ec6",
+      "sha256": "9d0aabd539cdb2a88cbc05e5f52e857f2dc834aabaaa3dc44f822b64fd1f7ec6",
+      "source_sql_preserved_verbatim": true,
+      "optional": false,
+      "feeds_active_financial_flow": true,
+      "changes": []
+    },
+    {
+      "stage_id": "cta09",
+      "cell": 27,
+      "cell_index_base": 0,
+      "variable": "sql",
+      "file": "sql/cta09.sql",
+      "logical_database": "workspace_db",
+      "logical_table": "CTA9_VolumesQuantidades_{{SAFRA}}",
+      "qualified_logical_table": "workspace_db.CTA9_VolumesQuantidades_{{SAFRA}}",
+      "logical_references": [
+        "CTA8_DayTrader_{{SAFRA}}"
+      ],
+      "dependencies": [
+        "cta08"
+      ],
+      "external_sources": [],
+      "parameters": [
+        "SAFRA",
+        "SAFRA_FIM",
+        "SAFRA_INICIO"
+      ],
+      "source_notebook_sha256": "85c5124c8db46af4ef8db73ac514b7ecef08f933a4e4f702c81f38960134b8c5",
+      "source_cell_sha256": "d219eb3494ea5f8612b755d571a6151ca003f44753ab821c6541b9107487c4b5",
+      "source_sql_sha256": "e0ecfef91391954a95316167803ed152ca290b2d592114d53ef57cd188a07cc3",
+      "sha256": "b04d1ab4907cd8e1305cbbf536720b2ad6ee7305b423067f93a88519bcef8a0f",
+      "source_sql_preserved_verbatim": false,
+      "optional": false,
+      "feeds_active_financial_flow": true,
+      "changes": [
+        {
+          "id": "quadrado_quantidade_decimal_38_0",
+          "occurrences": 2,
+          "before": "quantidade*quantidade",
+          "after": "CAST(quantidade AS DECIMAL(38,0))*CAST(quantidade AS DECIMAL(38,0))",
+          "reason": "Evitar overflow BIGINT no produto inteiro sem alterar a fórmula ou descartar operações.",
+          "scope": "Somente os dois produtos de quantidade na agregação histórica; restante do SQL literal."
+        }
+      ]
+    },
+    {
+      "stage_id": "cta10",
+      "cell": 29,
+      "cell_index_base": 0,
+      "variable": "sql",
+      "file": "sql/cta10.sql",
+      "logical_database": "workspace_db",
+      "logical_table": "CTA10_PerfilOperacional_{{SAFRA}}",
+      "qualified_logical_table": "workspace_db.CTA10_PerfilOperacional_{{SAFRA}}",
+      "logical_references": [
+        "CTA9_VolumesQuantidades_{{SAFRA}}"
+      ],
+      "dependencies": [
+        "cta09"
+      ],
+      "external_sources": [],
+      "parameters": [
+        "SAFRA"
+      ],
+      "source_notebook_sha256": "85c5124c8db46af4ef8db73ac514b7ecef08f933a4e4f702c81f38960134b8c5",
+      "source_cell_sha256": "db89e45f0b28cc3e30f8208a8b83b9813a7597a2723828314e4c886b633339f9",
+      "source_sql_sha256": "ada456b54299e4493ed832f1cd7c6caa2af07a29b56a8bcb175e7b9371c1e8c2",
+      "sha256": "ada456b54299e4493ed832f1cd7c6caa2af07a29b56a8bcb175e7b9371c1e8c2",
+      "source_sql_preserved_verbatim": true,
+      "optional": false,
+      "feeds_active_financial_flow": true,
+      "changes": []
+    },
+    {
+      "stage_id": "cta11",
+      "cell": 31,
+      "cell_index_base": 0,
+      "variable": "sql",
+      "file": "sql/cta11.sql",
+      "logical_database": "workspace_db",
+      "logical_table": "CTA11_FeaturesFinal_{{SAFRA}}",
+      "qualified_logical_table": "workspace_db.CTA11_FeaturesFinal_{{SAFRA}}",
+      "logical_references": [
+        "CTA10_PerfilOperacional_{{SAFRA}}",
+        "CTA5_EstudoVariacao_{{SAFRA}}"
+      ],
+      "dependencies": [
+        "cta05",
+        "cta10"
+      ],
+      "external_sources": [],
+      "parameters": [
+        "SAFRA"
+      ],
+      "source_notebook_sha256": "85c5124c8db46af4ef8db73ac514b7ecef08f933a4e4f702c81f38960134b8c5",
+      "source_cell_sha256": "6ce8d2b4f6666b4e4a5ce2e1856899ce8b8c811e9f85099b88923dc054b0df75",
+      "source_sql_sha256": "f49372cf8cad94e265490adbadfc7a1b3c6c1fe4d55040f3611ca3dc813b49af",
+      "sha256": "f49372cf8cad94e265490adbadfc7a1b3c6c1fe4d55040f3611ca3dc813b49af",
+      "source_sql_preserved_verbatim": true,
+      "optional": false,
+      "feeds_active_financial_flow": true,
+      "changes": []
+    },
+    {
+      "stage_id": "cta12_diagnostico",
+      "cell": 33,
+      "cell_index_base": 0,
+      "variable": "sql",
+      "file": "sql/cta12_diagnostico.sql",
+      "logical_database": "workspace_db",
+      "logical_table": "CTA12_FugiramPerfil_{{SAFRA}}",
+      "qualified_logical_table": "workspace_db.CTA12_FugiramPerfil_{{SAFRA}}",
+      "logical_references": [
+        "CTA11_FeaturesFinal_{{SAFRA}}"
+      ],
+      "dependencies": [
+        "cta11"
+      ],
+      "external_sources": [],
+      "parameters": [
+        "SAFRA"
+      ],
+      "source_notebook_sha256": "85c5124c8db46af4ef8db73ac514b7ecef08f933a4e4f702c81f38960134b8c5",
+      "source_cell_sha256": "f8b869d45ccbec2e09fcb980ddb4c0b0e89b9a8e30ad16c537093d9bb5c7bbde",
+      "source_sql_sha256": "69ce4acc4fcb5f22f77f63b7aa5fd14bda5d1ca7120328f2b1f3250e28df0808",
+      "sha256": "69ce4acc4fcb5f22f77f63b7aa5fd14bda5d1ca7120328f2b1f3250e28df0808",
+      "source_sql_preserved_verbatim": true,
+      "optional": true,
+      "feeds_active_financial_flow": false,
+      "changes": []
+    },
+    {
+      "stage_id": "cta13_base",
+      "cell": 40,
+      "cell_index_base": 0,
+      "variable": "sql_base",
+      "file": "sql/cta13_base.sql",
+      "logical_database": "workspace_db",
+      "logical_table": "CTA13_CalculoResultado_Base_Estudo_{{SAFRA}}",
+      "qualified_logical_table": "workspace_db.CTA13_CalculoResultado_Base_Estudo_{{SAFRA}}",
+      "logical_references": [
+        "CTA11_FeaturesFinal_{{SAFRA}}"
+      ],
+      "dependencies": [
+        "cta11"
+      ],
+      "external_sources": [],
+      "parameters": [
+        "SAFRA"
+      ],
+      "source_notebook_sha256": "85c5124c8db46af4ef8db73ac514b7ecef08f933a4e4f702c81f38960134b8c5",
+      "source_cell_sha256": "e2898d95248881f94c08b41d7a0bc1d5b8d4a24ec79daeb9c008cd5657cd4c07",
+      "source_sql_sha256": "be2e84d3b5626a1776f73af2bd899aa27683afa4a6012d92e72252be8616020d",
+      "sha256": "be2e84d3b5626a1776f73af2bd899aa27683afa4a6012d92e72252be8616020d",
+      "source_sql_preserved_verbatim": true,
+      "optional": false,
+      "feeds_active_financial_flow": true,
+      "changes": []
+    },
+    {
+      "stage_id": "cta14",
+      "cell": 43,
+      "cell_index_base": 0,
+      "variable": "sql",
+      "file": "sql/cta14.sql",
+      "logical_database": "workspace_db",
+      "logical_table": "CTA14_Custodia_{{SAFRA}}",
+      "qualified_logical_table": "workspace_db.CTA14_Custodia_{{SAFRA}}",
+      "logical_references": [
+        "CTA13_CalculoResultado_PF_{{SAFRA}}"
+      ],
+      "dependencies": [
+        "cta13_pf"
+      ],
+      "external_sources": [
+        "db_corp_corretora_inoabrokertools_sot_01.tb_ep7_carteiras_equities_sot"
+      ],
+      "parameters": [
+        "SAFRA",
+        "SAFRA_FIM",
+        "SAFRA_INICIO"
+      ],
+      "source_notebook_sha256": "85c5124c8db46af4ef8db73ac514b7ecef08f933a4e4f702c81f38960134b8c5",
+      "source_cell_sha256": "f22b944734a5e9e51ac1c4949e425ed99c7f9db9ce56d9092e4ba6091308c10d",
+      "source_sql_sha256": "fa3a55ebb07832929c4bf634c27067eddd0020ddf5e90da8f99ca8e8fa47ee19",
+      "sha256": "fa3a55ebb07832929c4bf634c27067eddd0020ddf5e90da8f99ca8e8fa47ee19",
+      "source_sql_preserved_verbatim": true,
+      "optional": false,
+      "feeds_active_financial_flow": true,
+      "changes": []
+    },
+    {
+      "stage_id": "cta15",
+      "cell": 45,
+      "cell_index_base": 0,
+      "variable": "sql",
+      "file": "sql/cta15.sql",
+      "logical_database": "workspace_db",
+      "logical_table": "CTA15_CustodiaAtipicos_{{SAFRA}}",
+      "qualified_logical_table": "workspace_db.CTA15_CustodiaAtipicos_{{SAFRA}}",
+      "logical_references": [
+        "CTA14_Custodia_{{SAFRA}}",
+        "CTA3_EventosAtipicos_{{SAFRA}}"
+      ],
+      "dependencies": [
+        "cta03",
+        "cta14"
+      ],
+      "external_sources": [],
+      "parameters": [
+        "SAFRA"
+      ],
+      "source_notebook_sha256": "85c5124c8db46af4ef8db73ac514b7ecef08f933a4e4f702c81f38960134b8c5",
+      "source_cell_sha256": "ad5915b73423e1384b7399a93d15abcc498084e170c03e9388118cd9c21b4d80",
+      "source_sql_sha256": "e33aff6ff4258812e81fde21117211df080fd6106f988aa45962a421a3693731",
+      "sha256": "e33aff6ff4258812e81fde21117211df080fd6106f988aa45962a421a3693731",
+      "source_sql_preserved_verbatim": true,
+      "optional": false,
+      "feeds_active_financial_flow": true,
+      "changes": []
+    },
+    {
+      "stage_id": "cta16",
+      "cell": 47,
+      "cell_index_base": 0,
+      "variable": "sql",
+      "file": "sql/cta16.sql",
+      "logical_database": "workspace_db",
+      "logical_table": "CTA16_CustodiaInfos_{{SAFRA}}",
+      "qualified_logical_table": "workspace_db.CTA16_CustodiaInfos_{{SAFRA}}",
+      "logical_references": [
+        "CTA15_CustodiaAtipicos_{{SAFRA}}"
+      ],
+      "dependencies": [
+        "cta15"
+      ],
+      "external_sources": [],
+      "parameters": [
+        "SAFRA"
+      ],
+      "source_notebook_sha256": "85c5124c8db46af4ef8db73ac514b7ecef08f933a4e4f702c81f38960134b8c5",
+      "source_cell_sha256": "64c67e33cd09039ca700881decb798c2f413417e3118985427fa846b3b8b6b7c",
+      "source_sql_sha256": "9818f4e5b06fab9916ee206152cf10dec6976d18c7d191a96c4968a3af3bd49e",
+      "sha256": "9818f4e5b06fab9916ee206152cf10dec6976d18c7d191a96c4968a3af3bd49e",
+      "source_sql_preserved_verbatim": true,
+      "optional": false,
+      "feeds_active_financial_flow": true,
+      "changes": []
+    },
+    {
+      "stage_id": "cta17",
+      "cell": 49,
+      "cell_index_base": 0,
+      "variable": "sql",
+      "file": "sql/cta17.sql",
+      "logical_database": "workspace_db",
+      "logical_table": "CTA17_CustodiaOperacoes_{{SAFRA}}",
+      "qualified_logical_table": "workspace_db.CTA17_CustodiaOperacoes_{{SAFRA}}",
+      "logical_references": [
+        "CTA13_CalculoResultado_PF_{{SAFRA}}",
+        "CTA16_CustodiaInfos_{{SAFRA}}"
+      ],
+      "dependencies": [
+        "cta13_pf",
+        "cta16"
+      ],
+      "external_sources": [],
+      "parameters": [
+        "SAFRA"
+      ],
+      "source_notebook_sha256": "85c5124c8db46af4ef8db73ac514b7ecef08f933a4e4f702c81f38960134b8c5",
+      "source_cell_sha256": "072f42072f6a1110ccf7d707bb3a60bf637d306bb109fb3fa5039773df66f3e8",
+      "source_sql_sha256": "8459948a75fd9e5be3e5cb6751ee83685f96a1c5bb21aaa520bf9cc029fbd9ef",
+      "sha256": "8459948a75fd9e5be3e5cb6751ee83685f96a1c5bb21aaa520bf9cc029fbd9ef",
+      "source_sql_preserved_verbatim": true,
+      "optional": false,
+      "feeds_active_financial_flow": true,
+      "changes": []
+    },
+    {
+      "stage_id": "cta18",
+      "cell": 51,
+      "cell_index_base": 0,
+      "variable": "sql",
+      "file": "sql/cta18.sql",
+      "logical_database": "workspace_db",
+      "logical_table": "CTA18_CustodiaReversao_{{SAFRA}}",
+      "qualified_logical_table": "workspace_db.CTA18_CustodiaReversao_{{SAFRA}}",
+      "logical_references": [
+        "CTA17_CustodiaOperacoes_{{SAFRA}}"
+      ],
+      "dependencies": [
+        "cta17"
+      ],
+      "external_sources": [],
+      "parameters": [
+        "SAFRA"
+      ],
+      "source_notebook_sha256": "85c5124c8db46af4ef8db73ac514b7ecef08f933a4e4f702c81f38960134b8c5",
+      "source_cell_sha256": "79809ddb1f025aaca8623c4c34b0807555abbd0b410db8d62c4793c1112793f1",
+      "source_sql_sha256": "876ad1ea8abf4eab3e22b30f8b9169f8719fb85bb5aa4431da4c77c6fe9d04fb",
+      "sha256": "876ad1ea8abf4eab3e22b30f8b9169f8719fb85bb5aa4431da4c77c6fe9d04fb",
+      "source_sql_preserved_verbatim": true,
+      "optional": false,
+      "feeds_active_financial_flow": true,
+      "changes": []
+    },
+    {
+      "stage_id": "cta18_alertas",
+      "cell": 51,
+      "cell_index_base": 0,
+      "variable": "sql_alertas",
+      "file": "sql/cta18_alertas.sql",
+      "logical_database": "workspace_db",
+      "logical_table": "CTA18_AlertasTradingAhead_PF_{{SAFRA}}",
+      "qualified_logical_table": "workspace_db.CTA18_AlertasTradingAhead_PF_{{SAFRA}}",
+      "logical_references": [
+        "CTA18_CustodiaReversao_{{SAFRA}}"
+      ],
+      "dependencies": [
+        "cta18"
+      ],
+      "external_sources": [],
+      "parameters": [
+        "SAFRA"
+      ],
+      "source_notebook_sha256": "85c5124c8db46af4ef8db73ac514b7ecef08f933a4e4f702c81f38960134b8c5",
+      "source_cell_sha256": "79809ddb1f025aaca8623c4c34b0807555abbd0b410db8d62c4793c1112793f1",
+      "source_sql_sha256": "8adad4e3947e9db34862094eef3210076442afa6f1cb20788db32e8cbf7d874b",
+      "sha256": "8adad4e3947e9db34862094eef3210076442afa6f1cb20788db32e8cbf7d874b",
+      "source_sql_preserved_verbatim": true,
+      "optional": false,
+      "feeds_active_financial_flow": true,
+      "changes": []
+    },
+    {
+      "stage_id": "cta19",
+      "cell": 53,
+      "cell_index_base": 0,
+      "variable": "sql",
+      "file": "sql/cta19.sql",
+      "logical_database": "workspace_db",
+      "logical_table": "CTA19_ProxyReversaoCustodia_{{SAFRA}}",
+      "qualified_logical_table": "workspace_db.CTA19_ProxyReversaoCustodia_{{SAFRA}}",
+      "logical_references": [
+        "CTA13_CalculoResultado_PJ_{{SAFRA}}"
+      ],
+      "dependencies": [
+        "cta13_pj"
+      ],
+      "external_sources": [],
+      "parameters": [
+        "SAFRA"
+      ],
+      "source_notebook_sha256": "85c5124c8db46af4ef8db73ac514b7ecef08f933a4e4f702c81f38960134b8c5",
+      "source_cell_sha256": "58f38a846932d1badb478e0693bfea14312a74e5c16ab4a07d0ec7807274f7e6",
+      "source_sql_sha256": "7f5336686f9ef7391762e11603e579c89cea6dcf724fb977eb5e7db6c7006bb0",
+      "sha256": "7f5336686f9ef7391762e11603e579c89cea6dcf724fb977eb5e7db6c7006bb0",
+      "source_sql_preserved_verbatim": true,
+      "optional": false,
+      "feeds_active_financial_flow": true,
+      "changes": []
+    }
+  ],
+  "external_sources": [
+    "db_corp_corretora_inoabrokertools_sor_01.tb_ep7_re_complementos_investidores_sor",
+    "db_corp_corretora_inoabrokertools_sot_01.tb_ep7_alocacoes_sot",
+    "db_corp_corretora_inoabrokertools_sot_01.tb_ep7_carteiras_equities_sot",
+    "db_corp_corretora_inoabrokertools_sot_01.tb_ep7_complementos_contas_sot",
+    "db_corp_corretora_sinacor_sor_01.tb_eg9_tsccliger",
+    "db_corp_gestaoderiscos_alertastradesurveillance_sor_01.tb_rss_base_ticker_sor",
+    "db_corp_gestaoderiscos_distribuiprecoscorporativos_sor_01.tbim8_acao_btres",
+    "db_corp_modelagem_historicalmarketdata_sor_01.tb_wa5_sor_br_gov_cvm_fre_cia_aberta_administrador_membro_conselho_fiscal",
+    "db_corp_modelagem_historicalmarketdata_sor_01.tb_wa5_sor_br_gov_cvm_fre_cia_aberta_membro_comite",
+    "db_corp_modelagem_historicalmarketdata_sor_01.tb_wa5_sor_br_gov_cvm_fre_cia_aberta_participacao_sociedade",
+    "db_corp_modelagem_historicalmarketdata_sor_01.tb_wa5_sor_br_gov_cvm_fre_cia_aberta_posicao_acionaria",
+    "db_corp_modelagem_historicalmarketdata_sor_01.tb_wa5_sor_br_gov_cvm_fre_cia_aberta_relacao_familiar",
+    "db_corp_modelagem_historicalmarketdata_sor_01.tb_wa5_sor_br_gov_cvm_fre_cia_aberta_relacao_subordinacao",
+    "db_corp_modelagem_historicalmarketdata_sor_01.tb_wa5_sor_br_gov_cvm_ipe_cia_aberta"
+  ]
+}
